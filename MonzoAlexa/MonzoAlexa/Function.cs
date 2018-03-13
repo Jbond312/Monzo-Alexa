@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
@@ -44,20 +45,27 @@ namespace MonzoAlexa
                 {
                     Text = resource.HelpMessage
                 };
-                response.Response.ShouldEndSession = true;
+                response.Response.ShouldEndSession = false;
             }
             else if (input.GetRequestType() == typeof(IntentRequest))
             {
                 var intentRequest = (IntentRequest) input.Request;
 
-                var intentFactory = new IntentFactory();
+                var inputJson = JsonConvert.SerializeObject(input);
+
+                log.LogLine($"Logging Input: {inputJson}");
+
+                var accessToken = input.Session.User.AccessToken;
+                var intentFactory = new IntentFactory(accessToken, log);
 
                 log.LogLine($"{intentRequest.Intent.Name}");
 
                 var activatedIntent = intentFactory.GetIntent(intentRequest.Intent.Name);
                 
-                innerResponse = activatedIntent.Execute(intentRequest.Intent, resource);
+                var message = activatedIntent.Execute(intentRequest.Intent, resource);
 
+                innerResponse = new PlainTextOutputSpeech();
+                (innerResponse as PlainTextOutputSpeech).Text = message;
                 response.Response.ShouldEndSession = activatedIntent.ShouldEndSession;
             }
 

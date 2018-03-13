@@ -1,19 +1,22 @@
 ﻿using Alexa.NET.Request;
 using Alexa.NET.Response;
 using MonzoAlexa.Monzo;
+using System.Threading.Tasks;
+using Amazon.Lambda.Core;
 
 namespace MonzoAlexa.Intents.IntentTypes.BaseIntentTypes
 {
     public class HelpIntent : IIntent
     {
+        public HelpIntent(ILambdaLogger log)
+        {
+        }
+
         public string IntentName => "AMAZON.HelpIntent";
 
-        public IOutputSpeech Execute(Intent context, MonzoResource resource)
+        public string Execute(Intent context, MonzoResource resource)
         {
-            return new PlainTextOutputSpeech
-            {
-                Text = resource.HelpMessage
-            };
+            return resource.HelpMessage;
         }
 
         public bool ShouldEndSession => false;

@@ -14,8 +14,8 @@
     "function-memory-size" : 256,
     "function-timeout"     : 30,
     "function-handler"     : "MonzoAlexa::MonzoAlexa.Function::FunctionHandler",
-    "function-name"        : "WunderAlexa",
-    "function-role"        : "arn:aws:iam::347795873156:role/lambda_exec_WunderAlexa",
+    "function-name"        : "Monzo",
+    "function-role"        : "arn:aws:iam::347795873156:role/service-role/bonton",
     "tracing-mode"         : "PassThrough",
     "environment-variables" : ""
 }

@@ -1,18 +1,21 @@
 ﻿using Alexa.NET.Request;
 using Alexa.NET.Response;
 using MonzoAlexa.Monzo;
+using System.Threading.Tasks;
+using Amazon.Lambda.Core;
 
 namespace MonzoAlexa.Intents.IntentTypes.BaseIntentTypes
 {
     public class UnknownIntent : IIntent
     {
-        public string IntentName => "Unknown";
-        public IOutputSpeech Execute(Intent context, MonzoResource resource)
+        public UnknownIntent(ILambdaLogger log)
         {
-            return new PlainTextOutputSpeech
-            {
-                Text = resource.HelpReprompt
-            };
+        }
+
+        public string IntentName => "Unknown";
+        public string Execute(Intent context, MonzoResource resource)
+        {
+            return resource.HelpReprompt;
         }
 
         public bool ShouldEndSession => false;
