@@ -47,5 +47,14 @@ namespace MonzoAlexa.Monzo.ClientWrapper
 
             return balance.BalanceAmount;
         }
+
+        public async Task<IEnumerable<Transaction>> GetTransactions(Account account)
+        {
+            var response = await _client.GetAsync($"transactions?account_id={account.Id}");
+
+            var transaction = JsonConvert.DeserializeObject<TransactionResponse>(await response.Content.ReadAsStringAsync(), _settings);
+
+            return transaction.Transactions;
+        }
     }
 }

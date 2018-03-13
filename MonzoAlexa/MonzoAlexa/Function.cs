@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
@@ -56,7 +55,7 @@ namespace MonzoAlexa
                 log.LogLine($"Logging Input: {inputJson}");
 
                 var accessToken = input.Session.User.AccessToken;
-                var intentFactory = new IntentFactory(accessToken, log);
+                var intentFactory = new IntentFactory(accessToken);
 
                 log.LogLine($"{intentRequest.Intent.Name}");
 

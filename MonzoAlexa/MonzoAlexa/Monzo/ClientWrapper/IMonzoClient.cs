@@ -8,5 +8,6 @@ namespace MonzoAlexa.Monzo.ClientWrapper
     {
         Task<IEnumerable<Account>> GetAccounts();
         Task<int> GetBalance(Account account);
+        Task<IEnumerable<Transaction>> GetTransactions(Account account);
     }
 }

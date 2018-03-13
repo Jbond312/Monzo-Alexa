@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Amazon.Lambda.Core;
 using MonzoAlexa.Intents.IntentTypes;
 using MonzoAlexa.Intents.IntentTypes.BaseIntentTypes;
 
@@ -12,20 +11,23 @@ namespace MonzoAlexa.Intents
         private readonly List<IIntent> _intents;
         private readonly IIntent _unknownIntent;
 
-        public IntentFactory(string accessToken, ILambdaLogger log)
+        public IntentFactory(string accessToken)
         {
             _intents = new List<IIntent>
             {
                 //Base intents
-                new HelpIntent(log),
-                new CancelIntent(log),
-                new StopIntent(log),
+                new HelpIntent(),
+                new CancelIntent(),
+                new StopIntent(),
+                new UnknownIntent(),
 
                 //Custom intents
-                new GetBalanceIntent(accessToken, log)
+                new GetBalanceIntent(accessToken),
+                new GetAccountIntent(accessToken),
+                new GetLastMerchantTransactionIntent(accessToken)
             };
 
-            _unknownIntent = new UnknownIntent(log);
+            _unknownIntent = new UnknownIntent();
         }
 
         public IIntent GetIntent(string intentName)
