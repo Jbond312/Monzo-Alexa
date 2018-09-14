@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Alexa.NET.Request;
+using Amazon.Lambda.Core;
 using Humanizer;
 using MonzoAlexa.ExtensionMethods;
 using MonzoAlexa.Helpers;
@@ -12,11 +13,13 @@ namespace MonzoAlexa.Intents.IntentTypes
 {
     public class GetLastMerchantTransactionIntent : IIntent
     {
+        private readonly ILambdaLogger _logger;
         private readonly IMonzoClient _monzoClient;
 
-        public GetLastMerchantTransactionIntent(string accessToken)
+        public GetLastMerchantTransactionIntent(string accessToken, ILambdaLogger logger)
         {
-            _monzoClient = new MonzoClient(accessToken);
+            _logger = logger;
+            _monzoClient = new MonzoClient(accessToken, _logger);
         }
 
         public string IntentName => "GetLastMerchantTransactionIntent";
@@ -40,14 +43,33 @@ namespace MonzoAlexa.Intents.IntentTypes
                 return $"I'm sorry, I couldn't find any transactions for {merchant}";
             }
 
-            var day = lastTransaction.Created.Day.ToOrdinalWords();
-            var month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(lastTransaction.Created.Month);
-            var year = lastTransaction.Created.Year;
             var amount = CurrencyHelper.GetAmountString(Math.Abs(lastTransaction.Amount));
 
-            return $"Your last transaction at {merchant} was on the {day} of {month} {year} for {amount.Amount}";
+            var isYesterday = DateTime.Now.Date.AddDays(-1) == lastTransaction.Created.Date;
+            var isToday = DateTime.Now.Date.AddDays(0) == lastTransaction.Created.Date;
+
+            string dateMessage;
+
+            if (isYesterday)
+            {
+                dateMessage = "yesterday";
+            }
+            else if (isToday)
+            {
+                dateMessage = "today";
+            }
+            else
+            {
+                var day = lastTransaction.Created.Day.ToOrdinalWords();
+                var month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(lastTransaction.Created.Month);
+                var year = lastTransaction.Created.Year;
+
+                dateMessage = $"on the {day} of {month} {year}";
+            }
+
+            return $"Your last transaction at {merchant} was {dateMessage} for {amount.Amount}";
         }
 
-        public bool ShouldEndSession => false;
+        public bool ShouldEndSession => true;
     }
 }

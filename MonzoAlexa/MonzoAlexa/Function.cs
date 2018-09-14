@@ -31,15 +31,15 @@ namespace MonzoAlexa
 
             IOutputSpeech innerResponse = null;
 
-            var log = context.Logger;
-            log.LogLine("Skill Request Object:");
-            log.LogLine(JsonConvert.SerializeObject(input));
+            var logger = context.Logger;
+            logger.LogLine("Skill Request Object:");
+            logger.LogLine(JsonConvert.SerializeObject(input));
 
             var resource = MonzoResourceHelper.GetResources(input.Request.Locale);
 
             if (input.GetRequestType() == typeof(LaunchRequest))
             {
-                log.LogLine("Default LaunchRequest made: 'Alexa, open Monzo");
+                logger.LogLine("Default LaunchRequest made: 'Alexa, open Monzo");
                 innerResponse = new PlainTextOutputSpeech
                 {
                     Text = resource.HelpMessage
@@ -48,30 +48,42 @@ namespace MonzoAlexa
             }
             else if (input.GetRequestType() == typeof(IntentRequest))
             {
-                var intentRequest = (IntentRequest) input.Request;
-
-                var inputJson = JsonConvert.SerializeObject(input);
-
-                log.LogLine($"Logging Input: {inputJson}");
-
                 var accessToken = input.Session.User.AccessToken;
-                var intentFactory = new IntentFactory(accessToken);
+                string message;
+                if (!string.IsNullOrEmpty(accessToken))
+                {
 
-                log.LogLine($"{intentRequest.Intent.Name}");
+                    var intentRequest = (IntentRequest) input.Request;
 
-                var activatedIntent = intentFactory.GetIntent(intentRequest.Intent.Name);
-                
-                var message = activatedIntent.Execute(intentRequest.Intent, resource);
+                    var inputJson = JsonConvert.SerializeObject(input);
+
+                    logger.LogLine($"Logging Input: {inputJson}");
+
+
+                    var intentFactory = new IntentFactory(accessToken, logger);
+
+                    logger.LogLine($"{intentRequest.Intent.Name}");
+
+                    var activatedIntent = intentFactory.GetIntent(intentRequest.Intent.Name);
+
+                    message = activatedIntent.Execute(intentRequest.Intent, resource);
+                    response.Response.ShouldEndSession = activatedIntent.ShouldEndSession;
+                }
+                else
+                {
+                    message = "I'm sorry, I'm unable to communicate with the Monzo server. Please try again later.";
+                    response.Response.ShouldEndSession = true;
+                }
 
                 innerResponse = new PlainTextOutputSpeech();
                 (innerResponse as PlainTextOutputSpeech).Text = message;
-                response.Response.ShouldEndSession = activatedIntent.ShouldEndSession;
+                
             }
 
             response.Response.OutputSpeech = innerResponse;
             response.Version = "1.0";
-            log.LogLine("Skill Response Object...");
-            log.LogLine(JsonConvert.SerializeObject(response));
+            logger.LogLine("Skill Response Object...");
+            logger.LogLine(JsonConvert.SerializeObject(response));
             return response;
         }
     }

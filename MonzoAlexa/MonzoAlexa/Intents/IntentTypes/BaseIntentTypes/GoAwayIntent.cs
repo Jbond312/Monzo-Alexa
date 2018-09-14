@@ -3,13 +3,13 @@ using MonzoAlexa.Monzo;
 
 namespace MonzoAlexa.Intents.IntentTypes.BaseIntentTypes
 {
-    public class UnknownIntent : IIntent
+    public class GoAwayIntent : IIntent
     {
-        public string IntentName => "UnknownIntent";
+        public string IntentName => "GoAwayIntent";
 
         public string Execute(Intent context, MonzoResource resource)
         {
-            return "I'm sorry, I'm afraid I don't understand.";
+            return "Goodbye!";
         }
 
         public bool ShouldEndSession => true;

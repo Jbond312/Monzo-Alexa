@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MonzoAlexa.Monzo.ClientWrapper.Entities;
 
@@ -8,6 +9,6 @@ namespace MonzoAlexa.Monzo.ClientWrapper
     {
         Task<IEnumerable<Account>> GetAccounts();
         Task<int> GetBalance(Account account);
-        Task<IEnumerable<Transaction>> GetTransactions(Account account);
+        Task<IEnumerable<Transaction>> GetTransactions(Account account, DateTime? since = null);
     }
 }

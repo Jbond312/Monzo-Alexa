@@ -11,14 +11,14 @@ namespace MonzoAlexa.Monzo
             var enUsResource = new MonzoResource("en-US")
             {
                 SkillName = "Monzo Alexa",
-                HelpMessage = "You can say What is my balance, or, How much have I spent today... What can I help you with?",
+                HelpMessage = "Welcome to Monzo. You can ask me things like \"What is my balance?\", or, \"How much have I spent today?\"... What can I help you with?",
                 HelpReprompt = "What can I help you with?",
                 StopMessage = "Goodbye!"
             };
             var enGbResource = new MonzoResource("en-GB")
             {
                 SkillName = "Monzo Alexa",
-                HelpMessage = "You can say What is my balance, or, How much have I spent today... What can I help you with?",
+                HelpMessage = "Welcome to Monzo. You can ask me things like \"What is my balance?\", or, \"How much have I spent today?\"... What can I help you with?",
                 HelpReprompt = "What can I help you with?",
                 StopMessage = "Goodbye!"
             };

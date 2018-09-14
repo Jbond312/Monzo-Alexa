@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Alexa.NET.Request;
+using Amazon.Lambda.Core;
 using Humanizer;
 using MonzoAlexa.Monzo;
 using MonzoAlexa.Monzo.ClientWrapper;
@@ -8,11 +9,13 @@ namespace MonzoAlexa.Intents.IntentTypes
 {
     public class GetAccountIntent : IIntent
     {
+        private readonly ILambdaLogger _logger;
         private readonly IMonzoClient _monzoClient;
 
-        public GetAccountIntent(string accessToken)
+        public GetAccountIntent(string accessToken, ILambdaLogger logger)
         {
-            _monzoClient = new MonzoClient(accessToken);
+            _logger = logger;
+            _monzoClient = new MonzoClient(accessToken, _logger);
         }
 
         public string IntentName => "GetAccountIntent";
@@ -46,6 +49,6 @@ namespace MonzoAlexa.Intents.IntentTypes
             return message;
         }
 
-        public bool ShouldEndSession => false;
+        public bool ShouldEndSession => true;
     }
 }
